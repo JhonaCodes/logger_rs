@@ -20,7 +20,7 @@ void main() {
     test('Error log should work with error details', () {
       final error = Exception('Test error');
       final stackTrace = StackTrace.current;
-      
+
       expect(
         () => Log.e('Error message', error: error, stackTrace: stackTrace),
         returnsNormally,
@@ -71,7 +71,7 @@ void main() {
     test('Log with complex objects', () {
       final map = {'key': 'value', 'number': 42};
       final list = [1, 2, 3, 'four'];
-      
+
       expect(() {
         Log.d(map);
         Log.i(list);
@@ -81,13 +81,13 @@ void main() {
 
     test('Performance: Large number of logs', () {
       final stopwatch = Stopwatch()..start();
-      
+
       for (int i = 0; i < 100; i++) {
         Log.d('Performance test log #$i');
       }
-      
+
       stopwatch.stop();
-      
+
       // Should complete in reasonable time (< 1 second for 100 logs)
       expect(stopwatch.elapsedMilliseconds, lessThan(1000));
     });

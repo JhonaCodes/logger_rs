@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2025-01-14
+
+### Added
+- Full Web platform support with conditional imports
+- WASM runtime compatibility
+- Support for all 6 Dart platforms (Android, iOS, Windows, macOS, Linux, Web)
+
+### Changed
+- Replaced `dart:io` imports with conditional platform abstraction
+- Improved cross-platform console output handling
+- Enhanced Web browser console integration
+
+### Fixed
+- Web platform compatibility issue that prevented deployment
+- WASM runtime compatibility for future-proofing
+- Platform detection now works correctly across all environments
+
+### Technical Details
+- Implemented conditional imports for platform-specific code
+- Added platform abstraction layer (`platform_io.dart`, `platform_web.dart`, `platform_stub.dart`)
+- Ensured ANSI color codes work seamlessly on Web platforms
+- Removed direct `dart:io` dependency from main logger code
+
 ## [1.0.1] - 2025-01-14
 
 ### Added

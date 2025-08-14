@@ -81,13 +81,13 @@ class Log {
         RegExpMatch? match = RegExp(
           r'package:([^/]+)/(.+\.dart):(\d+):(\d+)',
         ).firstMatch(line);
-        
+
         if (match != null) {
           final packageName = match.group(1)!;
           final filePath = match.group(2)!;
           final lineNum = match.group(3)!;
           final colNum = match.group(4)!;
-          
+
           // For main package, show relative path
           if (packageName == 'logger_rs') {
             location = 'lib/$filePath:$lineNum:$colNum';
@@ -97,25 +97,26 @@ class Log {
           fullPath = location;
           break;
         }
-        
+
         // Try file:// format
         match = RegExp(
           r'file:///(.+\.dart):(\d+):(\d+)',
         ).firstMatch(line);
-        
+
         if (match != null) {
           fullPath = match.group(1)!;
           final parts = fullPath.split('/');
           if (parts.length > 2) {
             // Show only last 2 parts of path for brevity
-            location = '${parts[parts.length - 2]}/${parts.last}:${match.group(2)}:${match.group(3)}';
+            location =
+                '${parts[parts.length - 2]}/${parts.last}:${match.group(2)}:${match.group(3)}';
           } else {
             location = '${parts.last}:${match.group(2)}:${match.group(3)}';
           }
           break;
         }
       }
-      
+
       // Fallback if no location found
       if (location.isEmpty) {
         location = 'unknown location';
@@ -141,13 +142,16 @@ class Log {
             levelName = 'critical';
             prefix = '$_bold${_magenta}CRITICAL$_reset';
             message = ': $_magentaDim${record.message}$_reset';
-            additionalInfo = '\n$_bold$_magenta  --> $_reset$_gray$location$_reset';
+            additionalInfo =
+                '\n$_bold$_magenta  --> $_reset$_gray$location$_reset';
             if (fullPath.isNotEmpty && fullPath != location) {
               additionalInfo += '\n$_gray       $fullPath$_reset';
             }
             additionalInfo += '\n$_bold$_magenta   |$_reset';
-            additionalInfo += '\n$_bold$_magenta   = $_reset${_bold}critical$_reset: ${_magentaDim}System requires immediate attention$_reset';
-            additionalInfo += '\n$_bold$_magenta   = $_reset${_bold}help$_reset: ${_magentaDim}Check system logs and restart if necessary$_reset';
+            additionalInfo +=
+                '\n$_bold$_magenta   = $_reset${_bold}critical$_reset: ${_magentaDim}System requires immediate attention$_reset';
+            additionalInfo +=
+                '\n$_bold$_magenta   = $_reset${_bold}help$_reset: ${_magentaDim}Check system logs and restart if necessary$_reset';
           } else {
             // E = ERROR (rojo)
             levelName = 'error';
@@ -161,18 +165,15 @@ class Log {
 
             if (record.error != null) {
               additionalInfo +=
-              '\n$_bold$_red   = $_reset${_bold}error$_reset: $_redDim${record.error}$_reset';
+                  '\n$_bold$_red   = $_reset${_bold}error$_reset: $_redDim${record.error}$_reset';
             }
             if (record.stackTrace != null) {
-              final errorStackLines = record.stackTrace
-                  .toString()
-                  .split('\n')
-                  .take(4)
-                  .toList();
+              final errorStackLines =
+                  record.stackTrace.toString().split('\n').take(4).toList();
               for (int i = 0; i < errorStackLines.length; i++) {
                 final lineNum = (i + 1).toString().padLeft(2);
                 additionalInfo +=
-                '\n$_bold$_red$lineNum |$_reset $_gray${errorStackLines[i].trim()}$_reset';
+                    '\n$_bold$_red$lineNum |$_reset $_gray${errorStackLines[i].trim()}$_reset';
               }
               additionalInfo += '\n$_bold$_red   |$_reset';
             }
@@ -184,7 +185,8 @@ class Log {
           levelName = 'warning';
           prefix = '$_bold${_yellow}warning$_reset';
           message = ': $_yellowDim${record.message}$_reset';
-          additionalInfo = '\n$_bold$_yellow  --> $_reset$_gray$location$_reset';
+          additionalInfo =
+              '\n$_bold$_yellow  --> $_reset$_gray$location$_reset';
           if (fullPath.isNotEmpty && fullPath != location) {
             additionalInfo += '\n$_gray       $fullPath$_reset';
           }
@@ -192,7 +194,7 @@ class Log {
 
           if (record.error != null) {
             additionalInfo +=
-            '\n$_bold$_yellow   = $_reset${_bold}note$_reset: $_yellowDim${record.error}$_reset';
+                '\n$_bold$_yellow   = $_reset${_bold}note$_reset: $_yellowDim${record.error}$_reset';
           }
           additionalInfo += '\n';
           break;
@@ -256,8 +258,9 @@ class Log {
     DateTime? time,
     Object? error,
     StackTrace? stackTrace,
-  }) => _log.severe(message, error, stackTrace);
-  
+  }) =>
+      _log.severe(message, error, stackTrace);
+
   /// Log a trace message (most verbose)
   static void t(dynamic message) => _log.finest(message);
 }

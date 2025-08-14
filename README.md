@@ -24,7 +24,7 @@ Add `logger_rs` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  logger_rs: ^1.0.1
+  logger_rs: ^1.0.2
 ```
 
 Then run:
@@ -123,9 +123,10 @@ Logger RS works on all Dart platforms:
 
 - ✅ Flutter (iOS, Android, Web, Desktop)
 - ✅ Dart VM
-- ✅ Dart Native
+- ✅ Dart Native  
+- ✅ Web (with WASM compatibility)
 
-Color output is automatically enabled on platforms that support ANSI colors (macOS, Linux, and most terminals). On other platforms, the logger falls back to plain text output.
+Color output is automatically enabled on all platforms including Web. The logger uses conditional imports to provide optimal experience across all environments while maintaining WASM compatibility for future deployments.
 
 ## Advanced Features
 
