@@ -24,7 +24,7 @@ Add `logger_rs` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  logger_rs: ^1.0.0
+  logger_rs: ^1.0.1
 ```
 
 Then run:
@@ -211,4 +211,4 @@ For issues and feature requests, please use the [GitHub issue tracker](https://g
 
 ---
 
-Made with ❤️ by JhonaCode# logger_rs
+Made with ❤️ by JhonaCode

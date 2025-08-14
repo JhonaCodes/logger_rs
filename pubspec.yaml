@@ -1,6 +1,6 @@
 name: logger_rs
 description: A beautiful Rust-style logger for Dart with colored output, precise file locations, and clean formatting inspired by the Rust compiler.
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/JhonaCodes/logger_rs
 repository: https://github.com/JhonaCodes/logger_rs
 issue_tracker: https://github.com/JhonaCodes/logger_rs/issues
