@@ -16,8 +16,7 @@ A beautiful Rust-style logger for Dart with colored output, precise file locatio
 - 💻 **Cross-platform** - Supports all Dart platforms
 
 ## Screenshots
-
-<img src="https://raw.githubusercontent.com/JhonaCodes/logger_rs/main/screenshots/output.png" alt="Logger RS Output Example" width="700"/>
+<img width="700" height="400" alt="Screenshot 2025-08-15 at 12 32 02 AM" src="https://github.com/user-attachments/assets/c2874ef1-af6f-4486-bbff-b3721978131d" />
 
 ## Installation
 
