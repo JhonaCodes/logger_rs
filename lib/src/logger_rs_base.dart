@@ -183,7 +183,7 @@ class Log {
 
         case Level.WARNING: // Warning - Yellow like Rust warning
           levelName = 'warning';
-          prefix = '$_bold${_yellow}warning$_reset';
+          prefix = '$_bold${_yellow}WARNING$_reset';
           message = ': $_yellowDim${record.message}$_reset';
           additionalInfo =
               '\n$_bold$_yellow  --> $_reset$_gray$location$_reset';
