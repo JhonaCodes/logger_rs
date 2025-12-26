@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:logging/logging.dart';
 
 /// Rust-style logger for Dart
@@ -225,16 +223,9 @@ class Log {
 
       // Print only with Rust-like format (no duplication)
 
-      if (Platform.isAndroid ||
-          Platform.isIOS ||
-          Platform.isMacOS ||
-          Platform.isLinux) {
-        // ignore: avoid_print
-        print(rustFormat);
-      } else {
-        // ignore: avoid_print
-        print('[$levelName] $timestamp ${record.message}$additionalInfo');
-      }
+      // ignore: avoid_print
+      print(rustFormat);
+
     });
 
     return logger;
