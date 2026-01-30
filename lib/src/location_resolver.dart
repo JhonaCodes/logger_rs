@@ -1,15 +1,23 @@
 /// Resolves caller location from stack trace.
 ///
-/// Extracts file path and line number from the current stack trace,
-/// filtering out internal logging infrastructure.
+/// Extracts file path, line number, and column from the current stack trace,
+/// filtering out internal logging infrastructure to show the actual caller.
+///
+/// Supports two stack trace formats:
+/// - Package: `package:app/src/file.dart:42:10`
+/// - File: `file:///path/to/file.dart:42:10`
 abstract final class LocationResolver {
+  /// Regex for package format stack traces.
   static final RegExp _packagePattern = RegExp(
     r'package:([^/]+)/(.+\.dart):(\d+):(\d+)',
   );
+
+  /// Regex for file format stack traces.
   static final RegExp _filePattern = RegExp(
     r'file:///(.+\.dart):(\d+):(\d+)',
   );
 
+  /// Internal files to skip when finding caller location.
   static const List<String> _ignoredPatterns = [
     'logger_rs_base.dart',
     'log.dart',
@@ -37,10 +45,12 @@ abstract final class LocationResolver {
     return const LocationInfo('unknown location', '');
   }
 
+  /// Returns true if line matches any ignored pattern.
   static bool _shouldIgnoreLine(String line) {
     return _ignoredPatterns.any((pattern) => line.contains(pattern));
   }
 
+  /// Tries to parse package format: `package:name/path.dart:line:col`
   static LocationInfo? _tryPackageFormat(String line) {
     final match = _packagePattern.firstMatch(line);
     if (match == null) return null;
@@ -57,6 +67,7 @@ abstract final class LocationResolver {
     return LocationInfo(location, location);
   }
 
+  /// Tries to parse file format: `file:///path/file.dart:line:col`
   static LocationInfo? _tryFileFormat(String line) {
     final match = _filePattern.firstMatch(line);
     if (match == null) return null;
@@ -75,11 +86,18 @@ abstract final class LocationResolver {
 }
 
 /// Contains resolved location information.
+///
+/// Holds both a compact [short] location for display
+/// and the [full] path when available.
 class LocationInfo {
+  /// Compact location: `path/file.dart:line:col`
   final String short;
+
+  /// Full path when available.
   final String full;
 
   const LocationInfo(this.short, this.full);
 
+  /// True if [full] provides additional info beyond [short].
   bool get hasDifferentFullPath => full.isNotEmpty && full != short;
 }

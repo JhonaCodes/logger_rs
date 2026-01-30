@@ -5,6 +5,47 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-01-30
+
+### Added
+
+#### Tag Logging System for AI Analysis
+- **`Log.tag(name, message)`** - Group related logs across layers with tags
+- **`Log.export(name)`** - Export tagged logs as Markdown to console
+- **`Log.export(name, onlyOnError: true)`** - Conditional export only when errors occur
+- **`Log.exportAll()`** - Export all tags at once
+- **`Log.clear(name)`** - Clear a tag without exporting
+- **`Log.clearAll()`** - Clear all tags
+- **`Log.hasTag(name)`** - Check if a tag exists
+- **`Log.hasErrors(name)`** - Check if a tag has error entries
+- **`Log.entryCount(name)`** - Get entry count for a tag
+
+#### Auto Stack Trace Capture
+- Automatic stack trace capture for WARNING, ERROR, and CRITICAL levels
+- No need to manually pass `StackTrace.current` for error logs
+
+#### Markdown Export Format
+- Clean Markdown output optimized for AI analysis (Claude, ChatGPT, etc.)
+- Visual separators for easy copy-paste
+- JSON syntax highlighting for Map objects
+- Collapsible stack traces using HTML details tags
+- Summary section with entry counts by level
+- Timeline section with timestamps and source locations
+
+#### New Export Module
+- `lib/src/export/tagged_entry.dart` - Entry model for tagged logs
+- `lib/src/export/md_formatter.dart` - Markdown formatter for AI-friendly output
+
+### Changed
+- Improved documentation with comprehensive examples
+- Better code organization with section separators
+- Enhanced docstrings for all public methods
+
+### Technical Details
+- Zero overhead in release builds (tag storage code is removed by compiler)
+- No file I/O - exports to console for universal compatibility
+- Works with Flutter, Dart VM, Web, and all platforms
+
 ## [1.0.4]
 - Remove dart:io for `jaspr` support
 

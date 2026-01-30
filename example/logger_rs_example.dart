@@ -20,6 +20,9 @@ void main() {
 
   // Real-world example
   realWorldExample();
+
+  // Tag logging for AI analysis (NEW!)
+  tagLoggingDemo();
 }
 
 void basicLogging() {
@@ -172,4 +175,118 @@ class Application {
     Log.d('Cleaning up resources');
     Log.i('Application shut down gracefully');
   }
+}
+
+// ============================================================================
+// TAG LOGGING DEMO - Export logs for AI analysis
+// ============================================================================
+
+void tagLoggingDemo() {
+  print('\n==== Tag Logging for AI Analysis ====\n');
+  print('Tags allow you to group logs across layers and export them for AI analysis.\n');
+
+  // Demo 1: Authentication flow with error
+  print('▸ Demo 1: Auth flow with error (will export)\n');
+  simulateAuthFlow();
+
+  // Demo 2: Successful flow (conditional export)
+  print('\n▸ Demo 2: Checkout flow without errors (conditional export)\n');
+  simulateSuccessFlow();
+
+  // Demo 3: Multi-layer tracking
+  print('\n▸ Demo 3: Order processing across layers\n');
+  simulateOrderProcessing();
+
+  print('\n════════════════════════════════════════════════════════════════');
+  print('✅ Copy the Markdown between separators and paste into Claude!');
+  print('════════════════════════════════════════════════════════════════\n');
+}
+
+/// Demo 1: Authentication flow with error - shows auto stack trace
+void simulateAuthFlow() {
+  // UI Layer
+  Log.tag('auth', 'User pressed login button');
+  Log.tag('auth', {'screen': 'LoginPage', 'action': 'submit'});
+
+  // Controller Layer
+  Log.tag('auth', 'Starting authentication process', level: Level.INFO);
+
+  // Service Layer
+  Log.tag('auth', 'Validating credentials');
+  Log.tag('auth', {'email': 'user@example.com', 'hasPassword': true});
+
+  // Repository Layer
+  Log.tag('auth', 'Executing auth query', level: Level.FINE);
+
+  // Simulate an error - stack trace is captured automatically!
+  Log.tag(
+    'auth',
+    'Authentication failed: Invalid credentials',
+    level: Level.SEVERE,
+    error: Exception('401 Unauthorized'),
+  );
+
+  // Export to console
+  Log.export('auth');
+}
+
+/// Demo 2: Successful checkout - shows conditional export
+void simulateSuccessFlow() {
+  Log.tag('checkout', 'User started checkout');
+  Log.tag('checkout', {'cartId': 'cart_123', 'items': 3});
+  Log.tag('checkout', 'Cart validated', level: Level.INFO);
+  Log.tag('checkout', 'Payment processed', level: Level.INFO);
+  Log.tag('checkout', {'orderId': 'ord_456', 'total': 99.99});
+  Log.tag('checkout', 'Order completed successfully', level: Level.INFO);
+
+  // Only export if there were errors (won't export - no errors!)
+  Log.export('checkout', onlyOnError: true);
+
+  print('   ✓ Checkout completed - no export needed (no errors)');
+}
+
+/// Demo 3: Order processing showing multi-layer tracking
+void simulateOrderProcessing() {
+  // UI Layer - User action
+  Log.tag('order', 'User clicked "Place Order"');
+  Log.tag('order', {
+    'screen': 'CheckoutPage',
+    'userId': 'usr_789',
+    'timestamp': DateTime.now().toIso8601String(),
+  });
+
+  // Controller Layer - Orchestration
+  Log.tag('order', 'OrderController: Processing order', level: Level.INFO);
+
+  // Service Layer - Business logic
+  Log.tag('order', 'InventoryService: Checking stock');
+  Log.tag('order', {'productId': 'prod_001', 'quantity': 2, 'inStock': true});
+
+  Log.tag('order', 'PaymentService: Processing payment');
+  Log.tag('order', {
+    'method': 'credit_card',
+    'last4': '4242',
+    'amount': 149.99,
+  });
+
+  // Simulate payment warning
+  Log.tag(
+    'order',
+    'PaymentService: High-value transaction flagged for review',
+    level: Level.WARNING,
+  );
+
+  // Repository Layer - Data persistence
+  Log.tag('order', 'OrderRepository: Saving order to database');
+  Log.tag('order', {
+    'query': 'INSERT INTO orders (user_id, total, status) VALUES (?, ?, ?)',
+    'params': ['usr_789', 149.99, 'pending'],
+  });
+
+  // Final status
+  Log.tag('order', 'Order created successfully', level: Level.INFO);
+  Log.tag('order', {'orderId': 'ord_999', 'status': 'confirmed'});
+
+  // Export - will export because there's a WARNING
+  Log.export('order', onlyOnError: true);
 }
