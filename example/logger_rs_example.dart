@@ -55,7 +55,7 @@ void objectLogging() {
     'id': 123,
     'name': 'John Doe',
     'email': 'john@example.com',
-    'roles': ['admin', 'user']
+    'roles': ['admin', 'user'],
   };
   Log.i(user);
 
@@ -183,7 +183,9 @@ class Application {
 
 void tagLoggingDemo() {
   print('\n==== Tag Logging for AI Analysis ====\n');
-  print('Tags allow you to group logs across layers and export them for AI analysis.\n');
+  print(
+    'Tags allow you to group logs across layers and export them for AI analysis.\n',
+  );
 
   // Demo 1: Authentication flow with error
   print('▸ Demo 1: Auth flow with error (will export)\n');

@@ -181,14 +181,14 @@ abstract final class MdFormatter {
 
   /// Returns an emoji icon for the given log level.
   static String _levelIcon(String level) => switch (level) {
-        'CRITICAL' => '🔴',
-        'ERROR' => '🔴',
-        'WARNING' => '🟡',
-        'INFO' => '🟢',
-        'DEBUG' => '🔵',
-        'TRACE' => '⚪',
-        _ => '⚪',
-      };
+    'CRITICAL' => '🔴',
+    'ERROR' => '🔴',
+    'WARNING' => '🟡',
+    'INFO' => '🟢',
+    'DEBUG' => '🔵',
+    'TRACE' => '⚪',
+    _ => '⚪',
+  };
 
   /// Formats a DateTime as `YYYY-MM-DD HH:MM:SS`.
   static String _formatDateTime(DateTime dt) {

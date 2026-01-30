@@ -31,25 +31,44 @@ abstract final class LogFormatter {
     final isMultiline = newlineIndex != -1;
 
     final sb = StringBuffer()
-      ..write('${AnsiColors.bold}${AnsiColors.magenta}CRITICAL${AnsiColors.reset}')
-      ..write(': ${AnsiColors.magentaDim}${isMultiline ? '' : msg}${AnsiColors.reset}')
+      ..write(
+        '${AnsiColors.bold}${AnsiColors.magenta}CRITICAL${AnsiColors.reset}',
+      )
+      ..write(
+        ': ${AnsiColors.magentaDim}${isMultiline ? '' : msg}${AnsiColors.reset}',
+      )
       ..writeln()
-      ..writeln('${AnsiColors.bold}${AnsiColors.magenta}  --> ${AnsiColors.reset}${AnsiColors.gray}${loc.short}${AnsiColors.reset}');
+      ..writeln(
+        '${AnsiColors.bold}${AnsiColors.magenta}  --> ${AnsiColors.reset}${AnsiColors.gray}${loc.short}${AnsiColors.reset}',
+      );
 
     if (loc.hasDifferentFullPath) {
       sb.writeln('${AnsiColors.gray}       ${loc.full}${AnsiColors.reset}');
     }
 
-    sb.writeln('${AnsiColors.bold}${AnsiColors.magenta}   |${AnsiColors.reset}');
+    sb.writeln(
+      '${AnsiColors.bold}${AnsiColors.magenta}   |${AnsiColors.reset}',
+    );
 
     if (isMultiline) {
-      _appendMultilineContent(sb, msg, AnsiColors.magenta, AnsiColors.magentaDim);
+      _appendMultilineContent(
+        sb,
+        msg,
+        AnsiColors.magenta,
+        AnsiColors.magentaDim,
+      );
     }
 
     sb
-      ..writeln('${AnsiColors.bold}${AnsiColors.magenta}   = ${AnsiColors.reset}${AnsiColors.bold}critical${AnsiColors.reset}: ${AnsiColors.magentaDim}System requires immediate attention${AnsiColors.reset}')
-      ..writeln('${AnsiColors.bold}${AnsiColors.magenta}   = ${AnsiColors.reset}${AnsiColors.bold}help${AnsiColors.reset}: ${AnsiColors.magentaDim}Check system logs and restart if necessary${AnsiColors.reset}')
-      ..write('${AnsiColors.bold}${AnsiColors.magenta}   └─${AnsiColors.reset}');
+      ..writeln(
+        '${AnsiColors.bold}${AnsiColors.magenta}   = ${AnsiColors.reset}${AnsiColors.bold}critical${AnsiColors.reset}: ${AnsiColors.magentaDim}System requires immediate attention${AnsiColors.reset}',
+      )
+      ..writeln(
+        '${AnsiColors.bold}${AnsiColors.magenta}   = ${AnsiColors.reset}${AnsiColors.bold}help${AnsiColors.reset}: ${AnsiColors.magentaDim}Check system logs and restart if necessary${AnsiColors.reset}',
+      )
+      ..write(
+        '${AnsiColors.bold}${AnsiColors.magenta}   └─${AnsiColors.reset}',
+      );
 
     return sb.toString();
   }
@@ -61,9 +80,13 @@ abstract final class LogFormatter {
 
     final sb = StringBuffer()
       ..write('${AnsiColors.bold}${AnsiColors.red}ERROR${AnsiColors.reset}')
-      ..write(': ${AnsiColors.redDim}${isMultiline ? '' : msg}${AnsiColors.reset}')
+      ..write(
+        ': ${AnsiColors.redDim}${isMultiline ? '' : msg}${AnsiColors.reset}',
+      )
       ..writeln()
-      ..writeln('${AnsiColors.bold}${AnsiColors.red}  --> ${AnsiColors.reset}${AnsiColors.gray}${loc.short}${AnsiColors.reset}');
+      ..writeln(
+        '${AnsiColors.bold}${AnsiColors.red}  --> ${AnsiColors.reset}${AnsiColors.gray}${loc.short}${AnsiColors.reset}',
+      );
 
     if (loc.hasDifferentFullPath) {
       sb.writeln('${AnsiColors.gray}       ${loc.full}${AnsiColors.reset}');
@@ -76,7 +99,9 @@ abstract final class LogFormatter {
     }
 
     if (record.error != null) {
-      sb.writeln('${AnsiColors.bold}${AnsiColors.red}   = ${AnsiColors.reset}${AnsiColors.bold}error${AnsiColors.reset}: ${AnsiColors.redDim}${record.error}${AnsiColors.reset}');
+      sb.writeln(
+        '${AnsiColors.bold}${AnsiColors.red}   = ${AnsiColors.reset}${AnsiColors.bold}error${AnsiColors.reset}: ${AnsiColors.redDim}${record.error}${AnsiColors.reset}',
+      );
     }
 
     if (record.stackTrace != null) {
@@ -84,7 +109,9 @@ abstract final class LogFormatter {
       var lineNum = 1;
       for (final line in stackLines) {
         final num = lineNum.toString().padLeft(2);
-        sb.writeln('${AnsiColors.bold}${AnsiColors.red}$num |${AnsiColors.reset} ${AnsiColors.gray}${line.trim()}${AnsiColors.reset}');
+        sb.writeln(
+          '${AnsiColors.bold}${AnsiColors.red}$num |${AnsiColors.reset} ${AnsiColors.gray}${line.trim()}${AnsiColors.reset}',
+        );
         lineNum++;
       }
     }
@@ -100,10 +127,16 @@ abstract final class LogFormatter {
     final isMultiline = msg.contains('\n');
 
     final sb = StringBuffer()
-      ..write('${AnsiColors.bold}${AnsiColors.yellow}WARNING${AnsiColors.reset}')
-      ..write(': ${AnsiColors.yellowDim}${isMultiline ? '' : msg}${AnsiColors.reset}')
+      ..write(
+        '${AnsiColors.bold}${AnsiColors.yellow}WARNING${AnsiColors.reset}',
+      )
+      ..write(
+        ': ${AnsiColors.yellowDim}${isMultiline ? '' : msg}${AnsiColors.reset}',
+      )
       ..writeln()
-      ..writeln('${AnsiColors.bold}${AnsiColors.yellow}  --> ${AnsiColors.reset}${AnsiColors.gray}${loc.short}${AnsiColors.reset}');
+      ..writeln(
+        '${AnsiColors.bold}${AnsiColors.yellow}  --> ${AnsiColors.reset}${AnsiColors.gray}${loc.short}${AnsiColors.reset}',
+      );
 
     if (loc.hasDifferentFullPath) {
       sb.writeln('${AnsiColors.gray}       ${loc.full}${AnsiColors.reset}');
@@ -116,7 +149,9 @@ abstract final class LogFormatter {
     }
 
     if (record.error != null) {
-      sb.writeln('${AnsiColors.bold}${AnsiColors.yellow}   = ${AnsiColors.reset}${AnsiColors.bold}note${AnsiColors.reset}: ${AnsiColors.yellowDim}${record.error}${AnsiColors.reset}');
+      sb.writeln(
+        '${AnsiColors.bold}${AnsiColors.yellow}   = ${AnsiColors.reset}${AnsiColors.bold}note${AnsiColors.reset}: ${AnsiColors.yellowDim}${record.error}${AnsiColors.reset}',
+      );
     }
 
     sb.write('${AnsiColors.bold}${AnsiColors.yellow}   └─${AnsiColors.reset}');
@@ -132,7 +167,9 @@ abstract final class LogFormatter {
     }
 
     final sb = StringBuffer()
-      ..writeln('${AnsiColors.bold}${AnsiColors.green}INFO${AnsiColors.reset}: ${AnsiColors.gray}${loc.short}${AnsiColors.reset}')
+      ..writeln(
+        '${AnsiColors.bold}${AnsiColors.green}INFO${AnsiColors.reset}: ${AnsiColors.gray}${loc.short}${AnsiColors.reset}',
+      )
       ..writeln('${AnsiColors.bold}${AnsiColors.green}   |${AnsiColors.reset}');
 
     _appendMultilineContent(sb, msg, AnsiColors.green, AnsiColors.greenDim);
@@ -149,7 +186,9 @@ abstract final class LogFormatter {
     }
 
     final sb = StringBuffer()
-      ..writeln('${AnsiColors.bold}${AnsiColors.cyan}DEBUG${AnsiColors.reset}: ${AnsiColors.gray}${loc.short}${AnsiColors.reset}')
+      ..writeln(
+        '${AnsiColors.bold}${AnsiColors.cyan}DEBUG${AnsiColors.reset}: ${AnsiColors.gray}${loc.short}${AnsiColors.reset}',
+      )
       ..writeln('${AnsiColors.bold}${AnsiColors.cyan}   |${AnsiColors.reset}');
 
     _appendMultilineContent(sb, msg, AnsiColors.cyan, AnsiColors.cyanDim);
@@ -166,7 +205,9 @@ abstract final class LogFormatter {
     }
 
     final sb = StringBuffer()
-      ..writeln('${AnsiColors.dim}${AnsiColors.gray}TRACE${AnsiColors.reset}: ${AnsiColors.gray}${loc.short}${AnsiColors.reset}')
+      ..writeln(
+        '${AnsiColors.dim}${AnsiColors.gray}TRACE${AnsiColors.reset}: ${AnsiColors.gray}${loc.short}${AnsiColors.reset}',
+      )
       ..writeln('${AnsiColors.gray}   |${AnsiColors.reset}')
       ..writeln('${AnsiColors.gray}   ┌─${AnsiColors.reset}');
 

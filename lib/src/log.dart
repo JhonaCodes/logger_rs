@@ -123,11 +123,7 @@ class Log {
   ///   Log.e('Failed to fetch data', error: e, stackTrace: stack);
   /// }
   /// ```
-  static void e(
-    dynamic message, {
-    Object? error,
-    StackTrace? stackTrace,
-  }) =>
+  static void e(dynamic message, {Object? error, StackTrace? stackTrace}) =>
       _logger.severe(_format(message), error, stackTrace);
 
   /// Logs a critical/fatal message.
@@ -209,7 +205,8 @@ class Log {
     final capturedStack = StackTrace.current;
 
     // Auto-capture stack trace for error levels if not provided
-    final effectiveStackTrace = stackTrace ??
+    final effectiveStackTrace =
+        stackTrace ??
         (level == Level.WARNING || level == Level.SEVERE || level == Level.SHOUT
             ? capturedStack
             : null);
@@ -219,20 +216,29 @@ class Log {
 
     assert(() {
       final formatted = ObjectFormatter.format(message);
-      _tags.putIfAbsent(name, () => []).add(TaggedEntry(
-            message: formatted,
-            level: _levelName(level),
-            location: location.short,
-            timestamp: DateTime.now(),
-            error: error,
-            stackTrace: effectiveStackTrace,
-          ));
+      _tags
+          .putIfAbsent(name, () => [])
+          .add(
+            TaggedEntry(
+              message: formatted,
+              level: _levelName(level),
+              location: location.short,
+              timestamp: DateTime.now(),
+              error: error,
+              stackTrace: effectiveStackTrace,
+            ),
+          );
       return true;
     }());
 
     // Use pre-resolved location to avoid double stack capture
-    _logWithLocation(level, message, location,
-        error: error, stackTrace: effectiveStackTrace);
+    _logWithLocation(
+      level,
+      message,
+      location,
+      error: error,
+      stackTrace: effectiveStackTrace,
+    );
   }
 
   /// Exports a tag's logs to console as Markdown.
@@ -265,7 +271,11 @@ class Log {
   /// // Combine both: custom condition AND must have errors
   /// Log.export('flow', export: isDebugMode, onlyOnError: true);
   /// ```
-  static void export(String name, {bool export = true, bool onlyOnError = false}) {
+  static void export(
+    String name, {
+    bool export = true,
+    bool onlyOnError = false,
+  }) {
     assert(() {
       final entries = _tags[name];
       if (entries == null || entries.isEmpty) return true;
@@ -429,14 +439,14 @@ class Log {
 
   /// Converts a [Level] to a readable name string.
   static String _levelName(Level level) => switch (level) {
-        Level.FINEST => 'TRACE',
-        Level.FINE => 'DEBUG',
-        Level.INFO => 'INFO',
-        Level.WARNING => 'WARNING',
-        Level.SEVERE => 'ERROR',
-        Level.SHOUT => 'CRITICAL',
-        _ => 'DEBUG',
-      };
+    Level.FINEST => 'TRACE',
+    Level.FINE => 'DEBUG',
+    Level.INFO => 'INFO',
+    Level.WARNING => 'WARNING',
+    Level.SEVERE => 'ERROR',
+    Level.SHOUT => 'CRITICAL',
+    _ => 'DEBUG',
+  };
 
   /// Internal: logs with a pre-resolved location to avoid double stack capture.
   ///

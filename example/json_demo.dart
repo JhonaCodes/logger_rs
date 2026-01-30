@@ -22,7 +22,13 @@ void main() {
   });
 
   // List
-  Log.i([1, 2, 3, 'four', {'five': 5}]);
+  Log.i([
+    1,
+    2,
+    3,
+    'four',
+    {'five': 5},
+  ]);
 
   // Warning with complex object
   Log.w({
@@ -62,19 +68,13 @@ void apiCallDemo() {
   });
 
   Log.tag('api', {
-    'body': {
-      'name': 'John Doe',
-      'email': 'john@example.com',
-    },
+    'body': {'name': 'John Doe', 'email': 'john@example.com'},
   });
 
   // Simulate response
   Log.tag('api', {
     'status': 201,
-    'response': {
-      'id': 'usr_123',
-      'created': true,
-    },
+    'response': {'id': 'usr_123', 'created': true},
   }, level: Level.INFO);
 
   Log.tag('api', 'API request completed successfully', level: Level.INFO);

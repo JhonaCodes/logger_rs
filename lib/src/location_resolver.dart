@@ -13,9 +13,7 @@ abstract final class LocationResolver {
   );
 
   /// Regex for file format stack traces.
-  static final RegExp _filePattern = RegExp(
-    r'file:///(.+\.dart):(\d+):(\d+)',
-  );
+  static final RegExp _filePattern = RegExp(r'file:///(.+\.dart):(\d+):(\d+)');
 
   // Note: _ignoredPatterns list removed - now using inline checks
   // for better performance with early returns (see _shouldIgnoreLine)

@@ -32,10 +32,7 @@ void main() {
     group('Error logging with details', () {
       test('Error with error object', () {
         final error = Exception('Test error');
-        expect(
-          () => Log.e('Error occurred', error: error),
-          returnsNormally,
-        );
+        expect(() => Log.e('Error occurred', error: error), returnsNormally);
       });
 
       test('Error with stack trace', () {
@@ -369,14 +366,20 @@ void main() {
           Log.tag('noErrors', 'Info', level: Level.INFO);
           Log.tag('noErrors', 'Debug', level: Level.FINE);
           // Should clear without printing separator
-          expect(() => Log.export('noErrors', onlyOnError: true), returnsNormally);
+          expect(
+            () => Log.export('noErrors', onlyOnError: true),
+            returnsNormally,
+          );
           expect(Log.hasTag('noErrors'), isFalse);
         });
 
         test('export(onlyOnError: true) exports when has errors', () {
           Log.tag('hasError', 'Info', level: Level.INFO);
           Log.tag('hasError', 'Error!', level: Level.SEVERE);
-          expect(() => Log.export('hasError', onlyOnError: true), returnsNormally);
+          expect(
+            () => Log.export('hasError', onlyOnError: true),
+            returnsNormally,
+          );
           expect(Log.hasTag('hasError'), isFalse);
         });
 
@@ -527,8 +530,8 @@ void main() {
 
           stopwatch.stop();
           final totalMs = stopwatch.elapsedMilliseconds;
-          final avgMicroseconds =
-              (stopwatch.elapsedMicroseconds / iterations).toStringAsFixed(2);
+          final avgMicroseconds = (stopwatch.elapsedMicroseconds / iterations)
+              .toStringAsFixed(2);
 
           // ignore: avoid_print
           print('\n📊 1000 simple tags:');
@@ -555,8 +558,8 @@ void main() {
 
           stopwatch.stop();
           final totalMs = stopwatch.elapsedMilliseconds;
-          final avgMicroseconds =
-              (stopwatch.elapsedMicroseconds / iterations).toStringAsFixed(2);
+          final avgMicroseconds = (stopwatch.elapsedMicroseconds / iterations)
+              .toStringAsFixed(2);
 
           // ignore: avoid_print
           print('\n📊 1000 Map tags:');
@@ -573,17 +576,13 @@ void main() {
           final stopwatch = Stopwatch()..start();
 
           for (int i = 0; i < iterations; i++) {
-            Log.tag(
-              'bench_error',
-              'Error message $i',
-              level: Level.SEVERE,
-            );
+            Log.tag('bench_error', 'Error message $i', level: Level.SEVERE);
           }
 
           stopwatch.stop();
           final totalMs = stopwatch.elapsedMilliseconds;
-          final avgMicroseconds =
-              (stopwatch.elapsedMicroseconds / iterations).toStringAsFixed(2);
+          final avgMicroseconds = (stopwatch.elapsedMicroseconds / iterations)
+              .toStringAsFixed(2);
 
           // ignore: avoid_print
           print('\n📊 500 error tags (auto stack trace):');
@@ -614,10 +613,10 @@ void main() {
           errorWatch.stop();
           Log.clear('error_bench');
 
-          final debugAvg =
-              (debugWatch.elapsedMicroseconds / iterations).toStringAsFixed(2);
-          final errorAvg =
-              (errorWatch.elapsedMicroseconds / iterations).toStringAsFixed(2);
+          final debugAvg = (debugWatch.elapsedMicroseconds / iterations)
+              .toStringAsFixed(2);
+          final errorAvg = (errorWatch.elapsedMicroseconds / iterations)
+              .toStringAsFixed(2);
           final overhead =
               (errorWatch.elapsedMicroseconds / debugWatch.elapsedMicroseconds)
                   .toStringAsFixed(2);
@@ -729,7 +728,9 @@ void main() {
           final ratio = times.last / times.first;
           final countRatio = counts.last / counts.first;
           // ignore: avoid_print
-          print('   Scaling factor: ${(ratio / countRatio).toStringAsFixed(2)}x');
+          print(
+            '   Scaling factor: ${(ratio / countRatio).toStringAsFixed(2)}x',
+          );
 
           expect(ratio, lessThan(countRatio * 2)); // Allow 2x overhead max
         });
@@ -791,11 +792,13 @@ void main() {
 
           stopwatch.stop();
           final totalEntries = tagsCount * entriesPerTag;
-          final avgMicroseconds =
-              (stopwatch.elapsedMicroseconds / totalEntries).toStringAsFixed(2);
+          final avgMicroseconds = (stopwatch.elapsedMicroseconds / totalEntries)
+              .toStringAsFixed(2);
 
           // ignore: avoid_print
-          print('\n📊 Concurrent tags ($tagsCount tags x $entriesPerTag entries):');
+          print(
+            '\n📊 Concurrent tags ($tagsCount tags x $entriesPerTag entries):',
+          );
           // ignore: avoid_print
           print('   Total: ${stopwatch.elapsedMilliseconds}ms');
           // ignore: avoid_print
@@ -822,8 +825,8 @@ void main() {
           }
 
           stopwatch.stop();
-          final opsPerSecond =
-              (count / stopwatch.elapsedMilliseconds * 1000).round();
+          final opsPerSecond = (count / stopwatch.elapsedMilliseconds * 1000)
+              .round();
 
           // ignore: avoid_print
           print('\n📊 Throughput (1 second):');
@@ -844,11 +847,17 @@ void main() {
           // ignore: avoid_print
           print('\n');
           // ignore: avoid_print
-          print('╔══════════════════════════════════════════════════════════════╗');
+          print(
+            '╔══════════════════════════════════════════════════════════════╗',
+          );
           // ignore: avoid_print
-          print('║              TAG LOGGING PERFORMANCE SUMMARY                 ║');
+          print(
+            '║              TAG LOGGING PERFORMANCE SUMMARY                 ║',
+          );
           // ignore: avoid_print
-          print('╠══════════════════════════════════════════════════════════════╣');
+          print(
+            '╠══════════════════════════════════════════════════════════════╣',
+          );
 
           // Simple tag benchmark
           var sw = Stopwatch()..start();
@@ -889,9 +898,13 @@ void main() {
           // ignore: avoid_print
           print('║  Error tag (+ stack):      $errorAvg μs/op              ║');
           // ignore: avoid_print
-          print('║  Export 500 entries:       ${exportMs}ms                       ║');
+          print(
+            '║  Export 500 entries:       ${exportMs}ms                       ║',
+          );
           // ignore: avoid_print
-          print('╚══════════════════════════════════════════════════════════════╝');
+          print(
+            '╚══════════════════════════════════════════════════════════════╝',
+          );
           // ignore: avoid_print
           print('\n');
         });
