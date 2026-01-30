@@ -205,14 +205,19 @@ class Log {
     Object? error,
     StackTrace? stackTrace,
   }) {
+    // Single stack capture for both location resolution and error tracking
+    final capturedStack = StackTrace.current;
+
     // Auto-capture stack trace for error levels if not provided
     final effectiveStackTrace = stackTrace ??
         (level == Level.WARNING || level == Level.SEVERE || level == Level.SHOUT
-            ? StackTrace.current
+            ? capturedStack
             : null);
 
+    // Resolve location once from the captured stack
+    final location = LocationResolver.resolve(capturedStack);
+
     assert(() {
-      final location = LocationResolver.resolve(StackTrace.current);
       final formatted = ObjectFormatter.format(message);
       _tags.putIfAbsent(name, () => []).add(TaggedEntry(
             message: formatted,
@@ -225,8 +230,9 @@ class Log {
       return true;
     }());
 
-    // Always print via standard logger (even in release)
-    _logByLevel(level, message, error: error, stackTrace: effectiveStackTrace);
+    // Use pre-resolved location to avoid double stack capture
+    _logWithLocation(level, message, location,
+        error: error, stackTrace: effectiveStackTrace);
   }
 
   /// Exports a tag's logs to console as Markdown.
@@ -235,10 +241,12 @@ class Log {
   /// Copy the output between the separators and paste into Claude or any
   /// AI for analysis.
   ///
-  /// The tag is cleared after export.
+  /// The tag is cleared after export (or after skipping if export is disabled).
   ///
   /// Parameters:
   /// - [name]: Tag identifier to export
+  /// - [export]: If false, skips export entirely (clears tag without printing).
+  ///   Use this for custom conditions. Default: true.
   /// - [onlyOnError]: If true, only exports if there are WARNING/ERROR/CRITICAL
   ///   entries. Useful for conditional export in try/catch blocks.
   ///
@@ -247,19 +255,26 @@ class Log {
   /// // Always export
   /// Log.export('auth');
   ///
+  /// // Conditional export based on your own logic
+  /// bool shouldExport = myCustomValidation();
+  /// Log.export('flow', export: shouldExport);
+  ///
   /// // Only export if errors occurred
-  /// try {
-  ///   await doSomething();
-  ///   Log.export('flow', onlyOnError: true);  // Won't export if no errors
-  /// } catch (e) {
-  ///   Log.tag('flow', 'Error: $e', level: Level.SEVERE);
-  ///   Log.export('flow', onlyOnError: true);  // Will export
-  /// }
+  /// Log.export('flow', onlyOnError: true);
+  ///
+  /// // Combine both: custom condition AND must have errors
+  /// Log.export('flow', export: isDebugMode, onlyOnError: true);
   /// ```
-  static void export(String name, {bool onlyOnError = false}) {
+  static void export(String name, {bool export = true, bool onlyOnError = false}) {
     assert(() {
       final entries = _tags[name];
       if (entries == null || entries.isEmpty) return true;
+
+      // Skip export if export parameter is false
+      if (!export) {
+        _tags.remove(name);
+        return true;
+      }
 
       // Skip export if onlyOnError is true and no errors exist
       if (onlyOnError) {
@@ -298,6 +313,7 @@ class Log {
   /// Each tag is exported separately with its own separators.
   ///
   /// Parameters:
+  /// - [export]: If false, clears all tags without exporting. Default: true.
   /// - [onlyOnError]: If true, only exports tags that have errors.
   ///
   /// Example:
@@ -305,13 +321,16 @@ class Log {
   /// // Export everything
   /// Log.exportAll();
   ///
+  /// // Conditional export
+  /// Log.exportAll(export: shouldExportLogs);
+  ///
   /// // Only export tags with errors
   /// Log.exportAll(onlyOnError: true);
   /// ```
-  static void exportAll({bool onlyOnError = false}) {
+  static void exportAll({bool export = true, bool onlyOnError = false}) {
     assert(() {
       for (final name in _tags.keys.toList()) {
-        export(name, onlyOnError: onlyOnError);
+        Log.export(name, export: export, onlyOnError: onlyOnError);
       }
       return true;
     }());
@@ -419,28 +438,20 @@ class Log {
         _ => 'DEBUG',
       };
 
-  /// Routes a message to the appropriate log method by level.
-  static void _logByLevel(
+  /// Internal: logs with a pre-resolved location to avoid double stack capture.
+  ///
+  /// Used by [tag] to eliminate redundant StackTrace.current calls.
+  static void _logWithLocation(
     Level level,
-    dynamic message, {
+    dynamic message,
+    LocationInfo location, {
     Object? error,
     StackTrace? stackTrace,
   }) {
-    switch (level) {
-      case Level.FINEST:
-        t(message);
-      case Level.FINE:
-        d(message);
-      case Level.INFO:
-        i(message);
-      case Level.WARNING:
-        w(message);
-      case Level.SEVERE:
-        e(message, error: error, stackTrace: stackTrace);
-      case Level.SHOUT:
-        f(message);
-      default:
-        d(message);
-    }
+    final formatted = _format(message);
+    final record = LogRecord(level, formatted, 'logger_rs', error, stackTrace);
+    final output = LogFormatter.format(record, location);
+    // ignore: avoid_print
+    print(output);
   }
 }

@@ -17,17 +17,8 @@ abstract final class LocationResolver {
     r'file:///(.+\.dart):(\d+):(\d+)',
   );
 
-  /// Internal files to skip when finding caller location.
-  static const List<String> _ignoredPatterns = [
-    'logger_rs_base.dart',
-    'log.dart',
-    'log_formatter.dart',
-    'location_resolver.dart',
-    'logging.dart',
-    'zone.dart',
-    'stack_trace/',
-    'Logger.',
-  ];
+  // Note: _ignoredPatterns list removed - now using inline checks
+  // for better performance with early returns (see _shouldIgnoreLine)
 
   /// Resolves the caller location from the current stack trace.
   ///
@@ -46,8 +37,20 @@ abstract final class LocationResolver {
   }
 
   /// Returns true if line matches any ignored pattern.
+  ///
+  /// Uses early returns with patterns ordered by frequency for performance.
+  /// Avoids closure allocation from List.any().
   static bool _shouldIgnoreLine(String line) {
-    return _ignoredPatterns.any((pattern) => line.contains(pattern));
+    // Most frequent patterns first (order by probability)
+    if (line.contains('Logger.')) return true;
+    if (line.contains('log.dart')) return true;
+    if (line.contains('zone.dart')) return true;
+    if (line.contains('logging.dart')) return true;
+    if (line.contains('location_resolver.dart')) return true;
+    if (line.contains('log_formatter.dart')) return true;
+    if (line.contains('logger_rs_base.dart')) return true;
+    if (line.contains('stack_trace/')) return true;
+    return false;
   }
 
   /// Tries to parse package format: `package:name/path.dart:line:col`

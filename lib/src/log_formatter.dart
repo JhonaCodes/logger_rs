@@ -26,7 +26,9 @@ abstract final class LogFormatter {
 
   static String _formatCritical(LogRecord record, LocationInfo loc) {
     final msg = _formatMessage(record.message);
-    final isMultiline = msg.contains('\n');
+    // Cache multiline check - evaluated once
+    final newlineIndex = msg.indexOf('\n');
+    final isMultiline = newlineIndex != -1;
 
     final sb = StringBuffer()
       ..write('${AnsiColors.bold}${AnsiColors.magenta}CRITICAL${AnsiColors.reset}')
@@ -54,6 +56,7 @@ abstract final class LogFormatter {
 
   static String _formatError(LogRecord record, LocationInfo loc) {
     final msg = _formatMessage(record.message);
+    // Cache multiline check - evaluated once
     final isMultiline = msg.contains('\n');
 
     final sb = StringBuffer()
@@ -93,6 +96,7 @@ abstract final class LogFormatter {
 
   static String _formatWarning(LogRecord record, LocationInfo loc) {
     final msg = _formatMessage(record.message);
+    // Cache multiline check - evaluated once
     final isMultiline = msg.contains('\n');
 
     final sb = StringBuffer()

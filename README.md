@@ -103,7 +103,21 @@ Log.tag('payment', 'Payment failed', level: Level.SEVERE);
 
 ### Conditional Export
 
-Only export when errors occur - perfect for production debugging:
+Control when to export based on your own logic:
+
+```dart
+// Export based on custom condition
+bool shouldExport = myValidation();
+Log.export('flow', export: shouldExport);
+
+// Only export when errors occur
+Log.export('order', onlyOnError: true);
+
+// Combine both: your condition AND must have errors
+Log.export('debug', export: isDebugMode, onlyOnError: true);
+```
+
+Example with error handling:
 
 ```dart
 try {
@@ -206,9 +220,11 @@ Copy the content between the separators and paste it into Claude or ChatGPT for 
 | `Log.tag(name, msg)` | Log with tag (also prints normally) |
 | `Log.tag(name, msg, level: Level.SEVERE)` | With specific level |
 | `Log.export(name)` | Export tag to console |
+| `Log.export(name, export: false)` | Skip export, just clear the tag |
+| `Log.export(name, export: condition)` | Export based on custom condition |
 | `Log.export(name, onlyOnError: true)` | Export only if errors exist |
 | `Log.exportAll()` | Export all tags |
-| `Log.exportAll(onlyOnError: true)` | Export only tags with errors |
+| `Log.exportAll(export: condition)` | Export all based on condition |
 | `Log.clear(name)` | Clear tag without exporting |
 | `Log.clearAll()` | Clear all tags |
 | `Log.hasTag(name)` | Check if tag exists |
@@ -217,27 +233,77 @@ Copy the content between the separators and paste it into Claude or ChatGPT for 
 
 ## Output Examples
 
-### Info Level
+Each log level has a distinct visual style inspired by Rust's compiler output:
+
+### Trace Level (Gray - Most Verbose)
 ```
-INFO: Server connected successfully package:example/main.dart:15:7
+TRACE: Entering processData function src/service.dart:42:5
 ```
 
-### Warning Level
+### Debug Level (Cyan)
 ```
-warning: Deprecated API usage detected
-  --> package:example/main.dart:23:5
+DEBUG: Processing user request src/controller.dart:28:7
+```
+
+### Info Level (Green)
+```
+INFO: Server started on port 8080 src/main.dart:15:3
+```
+
+For multiline content:
+```
+INFO: src/config.dart:23:5
    |
+   ┌─
+{
+  "host": "localhost",
+  "port": 8080,
+  "debug": true
+}
+   └─
 ```
 
-### Error Level with Stack Trace
+### Warning Level (Yellow)
+```
+WARNING: Deprecated API usage detected
+  --> src/legacy.dart:67:9
+   |
+   └─
+```
+
+### Error Level (Red)
 ```
 ERROR: Database connection failed
-  --> package:example/database.dart:45:12
+  --> src/database.dart:45:12
    |
    = error: SocketException: Connection refused
- 1 | #0      DatabaseConnection.connect (package:example/database.dart:45:12)
- 2 | #1      main (package:example/main.dart:10:5)
+ 1 | #0      Database.connect (src/database.dart:45:12)
+ 2 | #1      App.initialize (src/app.dart:23:5)
+ 3 | #2      main (src/main.dart:10:3)
+   └─
+```
+
+### Critical Level (Magenta)
+```
+CRITICAL: System out of memory
+  --> src/core.dart:112:7
    |
+   = critical: System requires immediate attention
+   = help: Check system logs and restart if necessary
+   └─
+```
+
+### JSON Objects (Pretty Printed)
+```
+DEBUG: src/api.dart:34:5
+   |
+   ┌─
+{
+  "userId": 123,
+  "action": "login",
+  "timestamp": "2024-01-30T12:30:45Z"
+}
+   └─
 ```
 
 ## Log Levels
@@ -264,7 +330,28 @@ Color output is automatically enabled on all platforms including Web.
 
 ## Performance
 
-Logger RS is designed for minimal overhead. Tag storage uses `assert()` blocks, meaning the compiler **completely removes** the tag storage code in release builds - zero memory usage, zero CPU usage.
+Logger RS is optimized for high-performance logging:
+
+### Benchmarks
+
+| Operation | Time | Throughput |
+|-----------|------|------------|
+| Simple log | ~17μs | ~58,000 ops/sec |
+| Map/JSON log | ~24μs | ~41,000 ops/sec |
+| Error with stack | ~27μs | ~37,000 ops/sec |
+| Export 500 entries | ~4ms | - |
+
+### Optimizations
+
+- **Early return pattern** - Stack trace filtering uses ordered checks with early exits
+- **Single stack capture** - Tagged logs capture `StackTrace.current` once, not twice
+- **Fast path for simple Maps** - Small maps bypass JSON encoder overhead
+- **Pre-compiled patterns** - RegExp patterns are static final, compiled once
+- **Zero allocation in hot paths** - Avoids closure allocation in loops
+
+### Release Mode
+
+Tag storage uses `assert()` blocks, meaning the compiler **completely removes** the tag storage code in release builds - zero memory usage, zero CPU overhead for tag features.
 
 ## Advanced Features
 
