@@ -16,4 +16,5 @@
 /// ```
 library;
 
-export 'src/logger_rs_base.dart' show Log;
+export 'package:logging/logging.dart' show Level;
+export 'src/log.dart' show Log;
