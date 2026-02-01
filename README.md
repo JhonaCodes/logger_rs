@@ -5,7 +5,7 @@
 
 A Rust-style logger for Dart with colored output, precise file locations, and clean formatting inspired by the Rust compiler.
 
-<img width="700" alt="Logger RS Output" src="https://github.com/user-attachments/assets/c2874ef1-af6f-4486-bbff-b3721978131d" />
+<img width="700" alt="Logger RS Output" src="https://github.com/user-attachments/assets/712cb467-db7a-4674-8134-53fd8b94dea1" />
 
 ## Installation
 
