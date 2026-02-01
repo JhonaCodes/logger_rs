@@ -7,13 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.2] - 2026-02-01
 
+### Added
+- **`Log.export()` now returns `String?`** - Returns the formatted Markdown for custom use (saving to files, etc.)
+- **`Log.exportAll()` now returns `Map<String, String>`** - Returns all exported tags as a map
+
 ### Changed
 - **Complete README rewrite** - Cleaner, more concise documentation
-- Reduced README from ~420 lines to ~150 lines (65% smaller)
 - Reorganized structure: Quick Start first, advanced features later
-- Tag logging moved to "Advanced" section instead of dominating the document
-- Simplified tables and removed redundant examples
-- Better balance between basic usage and advanced features
+- Added output examples for all log levels
+- Added export output example showing the Markdown format
+- New "Save to File" section documenting the return values
 
 ---
 

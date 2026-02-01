@@ -11,7 +11,7 @@ A Rust-style logger for Dart with colored output, precise file locations, and cl
 
 ```yaml
 dependencies:
-  logger_rs: ^2.0.2
+  logger_rs: ^2.0.3
 ```
 
 ## Quick Start
@@ -179,22 +179,37 @@ Login failed: Invalid credentials
 
 ════════════════════════════
 
-Copy the content between the separators and paste it into llm.
+Copy the content between the separators and paste it into your LLM.
+
+### Save to File
+
+`export` returns the formatted Markdown string, so you can save it to a file:
+
+```dart
+final markdown = Log.export('auth');
+if (markdown != null) {
+  File('debug_auth.md').writeAsStringSync(markdown);
+}
+
+// Export all tags to files
+final allLogs = Log.exportAll();
+for (final entry in allLogs.entries) {
+  File('${entry.key}_log.md').writeAsStringSync(entry.value);
+}
+```
 
 ### Tag API
 
-| Method | Description |
-|--------|-------------|
-| `Log.tag(name, msg)` | Add log to tag |
-| `Log.tag(name, msg, level: Level.SEVERE)` | Add with specific level |
-| `Log.export(name)` | Export tag to console |
-| `Log.export(name, onlyOnError: true)` | Export only if errors exist |
-| `Log.exportAll()` | Export all tags |
-| `Log.clear(name)` | Clear tag without exporting |
-| `Log.clearAll()` | Clear all tags |
-| `Log.hasTag(name)` | Check if tag exists |
-| `Log.hasErrors(name)` | Check if tag has errors |
-| `Log.entryCount(name)` | Get entry count |
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `Log.tag(name, msg)` | `void` | Add log to tag |
+| `Log.export(name)` | `String?` | Export to console and return markdown |
+| `Log.exportAll()` | `Map<String, String>` | Export all tags, return map of results |
+| `Log.clear(name)` | `void` | Clear tag without exporting |
+| `Log.clearAll()` | `void` | Clear all tags |
+| `Log.hasTag(name)` | `bool` | Check if tag exists |
+| `Log.hasErrors(name)` | `bool` | Check if tag has errors |
+| `Log.entryCount(name)` | `int` | Get entry count |
 
 Tags are automatically removed in release builds (zero overhead).
 

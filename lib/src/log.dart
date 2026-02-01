@@ -241,11 +241,15 @@ class Log {
     );
   }
 
-  /// Exports a tag's logs to console as Markdown.
+  /// Exports a tag's logs to console as Markdown and returns the formatted string.
   ///
   /// Prints the formatted Markdown with visual separators for easy copying.
   /// Copy the output between the separators and paste into Claude or any
   /// AI for analysis.
+  ///
+  /// Returns the formatted Markdown string (without separators) for custom use,
+  /// such as saving to a file. Returns `null` in release mode or if the tag
+  /// doesn't exist.
   ///
   /// The tag is cleared after export (or after skipping if export is disabled).
   ///
@@ -258,8 +262,13 @@ class Log {
   ///
   /// Example:
   /// ```dart
-  /// // Always export
-  /// Log.export('auth');
+  /// // Always export and get the string
+  /// final markdown = Log.export('auth');
+  ///
+  /// // Save to file if needed
+  /// if (markdown != null) {
+  ///   File('debug_log.md').writeAsStringSync(markdown);
+  /// }
   ///
   /// // Conditional export based on your own logic
   /// bool shouldExport = myCustomValidation();
@@ -271,11 +280,12 @@ class Log {
   /// // Combine both: custom condition AND must have errors
   /// Log.export('flow', export: isDebugMode, onlyOnError: true);
   /// ```
-  static void export(
+  static String? export(
     String name, {
     bool export = true,
     bool onlyOnError = false,
   }) {
+    String? result;
     assert(() {
       final entries = _tags[name];
       if (entries == null || entries.isEmpty) return true;
@@ -298,29 +308,34 @@ class Log {
       final errorCount = entries.where((e) => e.isError).length;
       final content = MdFormatter.format(name, entries);
 
+      // Build full formatted output
+      final buffer = StringBuffer()
+        ..writeln('# Tag: $name')
+        ..writeln(_separator)
+        ..writeln(content)
+        ..writeln(_separator);
+      result = buffer.toString();
+
       // Announce export via logger
       _logger.info(
         'Exporting tag: $name (${entries.length} entries, $errorCount errors)',
       );
 
-      // Print with separators for easy copying
+      // Print to console
       // ignore: avoid_print
-      print('\n# Tag: $name');
-      // ignore: avoid_print
-      print(_separator);
-      // ignore: avoid_print
-      print(content);
-      // ignore: avoid_print
-      print(_separator);
+      print('\n$result');
 
       _tags.remove(name);
       return true;
     }());
+    return result;
   }
 
-  /// Exports all tags to console as Markdown.
+  /// Exports all tags to console as Markdown and returns them as a map.
   ///
   /// Each tag is exported separately with its own separators.
+  /// Returns a map where keys are tag names and values are the formatted
+  /// Markdown strings. Returns empty map in release mode.
   ///
   /// Parameters:
   /// - [export]: If false, clears all tags without exporting. Default: true.
@@ -328,8 +343,13 @@ class Log {
   ///
   /// Example:
   /// ```dart
-  /// // Export everything
-  /// Log.exportAll();
+  /// // Export everything and get results
+  /// final logs = Log.exportAll();
+  ///
+  /// // Save all to files
+  /// for (final entry in logs.entries) {
+  ///   File('${entry.key}_log.md').writeAsStringSync(entry.value);
+  /// }
   ///
   /// // Conditional export
   /// Log.exportAll(export: shouldExportLogs);
@@ -337,13 +357,21 @@ class Log {
   /// // Only export tags with errors
   /// Log.exportAll(onlyOnError: true);
   /// ```
-  static void exportAll({bool export = true, bool onlyOnError = false}) {
+  static Map<String, String> exportAll({
+    bool export = true,
+    bool onlyOnError = false,
+  }) {
+    final results = <String, String>{};
     assert(() {
       for (final name in _tags.keys.toList()) {
-        Log.export(name, export: export, onlyOnError: onlyOnError);
+        final content = Log.export(name, export: export, onlyOnError: onlyOnError);
+        if (content != null) {
+          results[name] = content;
+        }
       }
       return true;
     }());
+    return results;
   }
 
   /// Clears a tag without exporting.
