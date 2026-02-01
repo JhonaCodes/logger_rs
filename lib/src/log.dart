@@ -364,7 +364,11 @@ class Log {
     final results = <String, String>{};
     assert(() {
       for (final name in _tags.keys.toList()) {
-        final content = Log.export(name, export: export, onlyOnError: onlyOnError);
+        final content = Log.export(
+          name,
+          export: export,
+          onlyOnError: onlyOnError,
+        );
         if (content != null) {
           results[name] = content;
         }
