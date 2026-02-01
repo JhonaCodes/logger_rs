@@ -40,7 +40,34 @@ void main() {
 | Error | `Log.e()` | Red | Errors with optional stack traces |
 | Fatal | `Log.f()` | Magenta | Critical failures |
 
-## Error Handling
+## Output Examples
+
+### Simple Messages
+
+```
+TRACE: Entering function src/service.dart:10:3
+
+DEBUG: Processing request src/controller.dart:25:5
+
+INFO: Server started on port 8080 src/main.dart:15:3
+
+WARNING: Deprecated API usage
+  --> src/legacy.dart:67:9
+   |
+   └─
+
+ERROR: Connection failed
+  --> src/database.dart:45:12
+   |
+   └─
+
+CRITICAL: System out of memory
+  --> src/core.dart:112:7
+   |
+   └─
+```
+
+### With Error and Stack Trace
 
 ```dart
 try {
@@ -50,7 +77,6 @@ try {
 }
 ```
 
-Output:
 ```
 ERROR: Operation failed
   --> src/service.dart:45:12
@@ -61,15 +87,12 @@ ERROR: Operation failed
    └─
 ```
 
-## Logging Objects
-
-Maps and objects are automatically formatted as JSON:
+### With Objects (JSON)
 
 ```dart
 Log.i({'user': 'john', 'action': 'login'});
 ```
 
-Output:
 ```
 INFO: src/auth.dart:15:3
    |
@@ -107,6 +130,57 @@ Log.export('auth', onlyOnError: true);
 Log.export('auth', export: isDebugMode);
 ```
 
+### Export Output
+
+When you call `Log.export('auth')`, the output is Markdown formatted for AI analysis:
+
+```
+# Tag: auth
+════════════════════════════════════════════════════════════════════════════════
+> **Tag:** `auth`
+> **Generated:** 2024-01-30 12:30:45
+> **Entries:** 4 | **Errors:** 1
+
+## Summary
+- **ERROR**: 1
+- **INFO**: 2
+- **DEBUG**: 1
+
+## Timeline
+
+### 12:30:45.001 🔵 [DEBUG] auth_page.dart:23:7
+User pressed login
+
+### 12:30:45.015 🟢 [INFO] auth_controller.dart:45:9
+Validating credentials
+
+### 12:30:45.050 🔵 [DEBUG] auth_service.dart:32:7
+```json
+{
+  "email": "user@example.com"
+}
+```
+
+### 12:30:46.200 🔴 [ERROR] auth_controller.dart:52:11
+Login failed: Invalid credentials
+
+<details>
+<summary>Stack Trace</summary>
+
+```dart
+#0  AuthService.authenticate (auth_service.dart:45:5)
+#1  AuthController.login (auth_controller.dart:52:11)
+```
+
+</details>
+
+---
+*Exported by logger_rs*
+
+════════════════════════════
+
+Copy the content between the separators and paste it into llm.
+
 ### Tag API
 
 | Method | Description |
@@ -131,14 +205,6 @@ Works on all Dart platforms with automatic color support:
 - Flutter (iOS, Android, Web, Desktop)
 - Dart VM / Native
 - Web (WASM compatible)
-
-## Performance
-
-| Operation | Time |
-|-----------|------|
-| Simple log | ~17μs |
-| Map/JSON log | ~24μs |
-| Error with stack | ~27μs |
 
 ## License
 
