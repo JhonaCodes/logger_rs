@@ -51,6 +51,8 @@ class Log {
   /// Internal logger instance.
   static final Logger _logger = _initLogger();
 
+  static Level _level = Level.ALL;
+
   Log._();
 
   /// Initializes the logger with the desired log level.
@@ -72,12 +74,13 @@ class Log {
   /// Log.init(level: Level.ALL);
   /// ```
   static void init({Level level = Level.ALL}) {
+    _level = level;
     Logger.root.level = level;
   }
 
   /// Initializes the root logger with custom formatting.
   static Logger _initLogger() {
-    Logger.root.level = Level.ALL;
+    Logger.root.level = _level;
 
     Logger.root.onRecord.listen((record) {
       final location = LocationResolver.resolve(StackTrace.current);

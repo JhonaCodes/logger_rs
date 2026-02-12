@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.1] - 2026-02-13
+
+### Fixed
+- **`Log.init()` race condition** - Fixed bug where `_initLogger()` always hardcoded `Level.ALL`, overwriting the level set by `Log.init()`. Now uses an intermediate `_level` field so the configured level is preserved regardless of initialization order.
+
+---
+
 ## [2.1.0] - 2026-02-13
 
 ### Added
