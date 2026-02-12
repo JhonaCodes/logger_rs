@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-02-13
+
+### Added
+- **`Log.init(level:)`** - Configure the log level at startup. Use `Level.OFF` to silence all logs in production, `Level.SEVERE` to show only errors, or `Level.ALL` (default) for full output. If not called, behavior is unchanged (all levels printed).
+
+---
+
 ## [2.0.3] - 2026-02-01
 
 ### Added

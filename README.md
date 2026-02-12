@@ -11,7 +11,7 @@ A Rust-style logger for Dart with colored output, precise file locations, and cl
 
 ```yaml
 dependencies:
-  logger_rs: ^2.0.3
+  logger_rs: ^2.1.0
 ```
 
 ## Quick Start
@@ -28,6 +28,23 @@ void main() {
   Log.t('Trace message');     // Gray
 }
 ```
+
+## Log Level Control
+
+Use `Log.init()` to control which logs are printed. Useful for silencing logs in production:
+
+```dart
+// Production: silence all logs
+Log.init(level: Level.OFF);
+
+// Production: only errors and fatal
+Log.init(level: Level.SEVERE);
+
+// Development (default): all logs
+Log.init(level: Level.ALL);
+```
+
+If `Log.init()` is not called, all levels are printed by default.
 
 ## Log Levels
 

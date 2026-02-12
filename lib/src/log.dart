@@ -53,6 +53,28 @@ class Log {
 
   Log._();
 
+  /// Initializes the logger with the desired log level.
+  ///
+  /// Call this early in your app to control which logs are printed.
+  /// In release/production builds, use [Level.OFF] to silence all output
+  /// or [Level.SEVERE] to only show errors.
+  ///
+  /// If not called, defaults to [Level.ALL] (everything is printed).
+  ///
+  /// ```dart
+  /// // Production: silence all logs
+  /// Log.init(level: Level.OFF);
+  ///
+  /// // Production: only errors and fatal
+  /// Log.init(level: Level.SEVERE);
+  ///
+  /// // Development (default)
+  /// Log.init(level: Level.ALL);
+  /// ```
+  static void init({Level level = Level.ALL}) {
+    Logger.root.level = level;
+  }
+
   /// Initializes the root logger with custom formatting.
   static Logger _initLogger() {
     Logger.root.level = Level.ALL;
@@ -490,6 +512,7 @@ class Log {
     Object? error,
     StackTrace? stackTrace,
   }) {
+    if (level < Logger.root.level) return;
     final formatted = _format(message);
     final record = LogRecord(level, formatted, 'logger_rs', error, stackTrace);
     final output = LogFormatter.format(record, location);
